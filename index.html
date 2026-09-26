@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rojak AI</title>
+
+<meta
+  name="description"
+  content="Rojak AI - AI Assistant"
+>
+
+<style>
+:root {
+  --bg: #0b0b0c;
+  --panel: #111113;
+  --panel2: #171719;
+  --border: #29292d;
+  --text: #f4f4f5;
+  --muted: #85858c;
+  --accent: #ff6a00;
+  --accent-hover: #ff7b1a;
+  --user: #252527;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    Inter,
+    Arial,
+    sans-serif;
+  overflow: hidden;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app {
+  display: flex;
+  width: 100%;
+  height: 100dvh;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+  width: 250px;
+  height: 100%;
+  background: #0f0f10;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 5px 4px 22px;
+}
+
+.brand-logo {
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.brand-info strong {
+  display: block;
+  font-size: 14px;
+}
+
+.brand-info span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.new-chat {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel2);
+  color: var(--text);
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.new-chat:hover {
+  background: #1d1d20;
+}
+
+.side-label {
+  color: #66666d;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 5px 8px;
+}
+
+.history {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.history-empty {
+  color: #66666d;
+  font-size: 12px;
+  padding: 8px 5px;
+}
+
+.history-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: #c8c8cc;
+  border-radius: 8px;
+  padding: 9px 10px;
+  margin-bottom: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+
+.history-item:hover {
+  background: #19191b;
+}
+
+.sidebar-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 13px;
+  color: #66666d;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.main {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 58px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+  background: #0b0b0c;
+}
+
+.mobile-brand {
+  display: none;
+  align-items: center;
+  gap: 9px;
+}
+
+.mobile-brand .brand-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.model-name {
+  color: #a5a5ab;
+  font-size: 11px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #85858c;
+  font-size: 11px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #44d483;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.chat-inner {
+  width: min(820px, calc(100% - 32px));
+  margin: auto;
+  padding: 45px 0 150px;
+}
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.welcome-logo {
+  width: 54px;
+  height: 54px;
+  border-radius: 15px;
+  background: var(--accent);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 900;
+  font-size: 19px;
+  margin-bottom: 18px;
+}
+
+.welcome h1 {
+  font-size: clamp(25px, 4vw, 38px);
+  letter-spacing: -1.5px;
+  margin-bottom: 10px;
+}
+
+.welcome p {
+  color: var(--muted);
+  font-size: 13px;
+  max-width: 450px;
+  line-height: 1.6;
+}
+
+.suggestions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: min(600px, 100%);
+  margin-top: 28px;
+}
+
+.suggestion {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 10px;
+  color: #c5c5ca;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.suggestion:hover {
+  background: #171719;
+  border-color: #3a3a3e;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.message {
+  display: flex;
+  margin-bottom: 25px;
+  gap: 12px;
+}
+
+.message.user {
+  justify-content: flex-end;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--accent);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  flex-shrink: 0;
+}
+
+.message.user .avatar {
+  order: 2;
+  background: #29292c;
+  color: #ddd;
+}
+
+.message-content {
+  max-width: min(720px, 85%);
+  min-width: 0;
+}
+
+.message-name {
+  color: #77777f;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+
+.message.user .message-name {
+  text-align: right;
+}
+
+.bubble {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #e5e5e8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.message.user .bubble {
+  background: var(--user);
+  border: 1px solid #303034;
+  padding: 10px 13px;
+  border-radius: 13px;
+}
+
+.message.error .bubble {
+  color: #ff7777;
+}
+
+/* =========================
+   TYPING
+========================= */
+
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+}
+
+.typing span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #85858b;
+  animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing span:nth-child(2) {
+  animation-delay: .15s;
+}
+
+.typing span:nth-child(3) {
+  animation-delay: .3s;
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: .4;
+  }
+
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* =========================
+   COMPOSER
+========================= */
+
+.composer-area {
+  position: fixed;
+  bottom: 0;
+  left: 250px;
+  right: 0;
+
+  padding: 12px 20px 15px;
+
+  background:
+    linear-gradient(
+      to top,
+      var(--bg) 70%,
+      transparent
+    );
+
+  pointer-events: none;
+}
+
+.composer-wrap {
+  width: min(820px, 100%);
+  margin: auto;
+  pointer-events: auto;
+}
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+
+  padding: 8px;
+
+  background: #141416;
+  border: 1px solid #303035;
+  border-radius: 15px;
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, .3);
+}
+
+#prompt {
+  flex: 1;
+
+  min-height: 40px;
+  max-height: 160px;
+
+  resize: none;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+  color: white;
+
+  padding: 10px 9px;
+
+  line-height: 1.4;
+  font-size: 13px;
+}
+
+#prompt::placeholder {
+  color: #68686e;
+}
+
+#send {
+  width: 40px;
+  height: 40px;
+
+  border-radius: 10px;
+
+  background: var(--accent);
+  color: white;
+
+  cursor: pointer;
+  font-size: 17px;
+
+  flex-shrink: 0;
+}
+
+#send:hover {
+  background: var(--accent-hover);
+}
+
+#send:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.composer-note {
+  text-align: center;
+  color: #5e5e64;
+  font-size: 9px;
+  margin-top: 7px;
+}
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #29292d;
+  border-radius: 10px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+  .sidebar {
+    display: none;
+  }
+
+  .topbar {
+    height: 54px;
+    padding: 0 14px;
+  }
+
+  .mobile-brand {
+    display: flex;
+  }
+
+  .model-name {
+    display: none;
+  }
+
+  .chat-inner {
+    width: calc(100% - 24px);
+    padding-top: 25px;
+    padding-bottom: 145px;
+  }
+
+  .welcome {
+    min-height: 55vh;
+  }
+
+  .welcome h1 {
+    font-size: 27px;
+  }
+
+  .suggestions {
+    grid-template-columns: 1fr;
+    margin-top: 22px;
+  }
+
+  .message {
+    gap: 8px;
+  }
+
+  .message-content {
+    max-width: 88%;
+  }
+
+  .bubble {
+    font-size: 13px;
+  }
+
+  .composer-area {
+    left: 0;
+    padding: 8px 10px 10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+    <div class="brand">
+
+      <div class="brand-logo">
+        R
+      </div>
+
+      <div class="brand-info">
+
+        <strong>
+          Rojak AI
+        </strong>
+
+        <span>
+          AI Assistant
+        </span>
+
+      </div>
+
+    </div>
+
+    <button
+      class="new-chat"
+      id="newChat"
+    >
+      <span>＋</span>
+      <span>New chat</span>
+    </button>
+
+    <div class="side-label">
+      Percakapan
+    </div>
+
+    <div
+      class="history"
+      id="history"
+    >
+      <div class="history-empty">
+        Belum ada percakapan.
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      Rojak AI<br>
+      Powered by DeepSeek
+    </div>
+
+  </aside>
+
+
+  <!-- MAIN -->
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div class="mobile-brand">
+
+        <div class="brand-logo">
+          R
+        </div>
+
+        <strong>
+          Rojak AI
+        </strong>
+
+      </div>
+
+      <div class="model-name">
+        DeepSeek
+      </div>
+
+      <div class="status">
+
+        <span class="status-dot"></span>
+
+        Online
+
+      </div>
+
+    </header>
+
+
+    <!-- CHAT -->
+
+    <section
+      class="chat"
+      id="chat"
+    >
+
+      <div
+        class="chat-inner"
+        id="chatInner"
+      >
+
+        <div
+          class="welcome"
+          id="welcome"
+        >
+
+          <div class="welcome-logo">
+            R
+          </div>
+
+          <h1>
+            Ada yang bisa dibantu?
+          </h1>
+
+          <p>
+            Tanyakan sesuatu, minta bantuan coding,
+            belajar, menulis, atau sekadar berdiskusi.
+          </p>
+
+          <div class="suggestions">
+
+            <button class="suggestion">
+              Jelaskan HTML untuk pemula
+            </button>
+
+            <button class="suggestion">
+              Bantu saya membuat website
+            </button>
+
+            <button class="suggestion">
+              Buatkan contoh JavaScript
+            </button>
+
+            <button class="suggestion">
+              Jelaskan sesuatu dengan sederhana
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<!-- COMPOSER -->
+
+<div class="composer-area">
+
+  <div class="composer-wrap">
+
+    <div class="composer">
+
+      <textarea
+        id="prompt"
+        rows="1"
+        placeholder="Tulis pesan..."
+        autocomplete="off"
+      ></textarea>
+
+      <button
+        id="send"
+        type="button"
+      >
+        ↑
+      </button>
+
+    </div>
+
+    <div class="composer-note">
+      AI dapat membuat kesalahan. Periksa informasi penting.
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+const chat = document.getElementById("chat");
+const chatInner = document.getElementById("chatInner");
+const prompt = document.getElementById("prompt");
+const sendButton = document.getElementById("send");
+const newChat = document.getElementById("newChat");
+const historyElement = document.getElementById("history");
+
+let messages = [];
+let conversations = [];
+let currentConversationId = null;
+let isGenerating = false;
+
+
+/* =========================
+   TEXTAREA
+========================= */
+
+function resizeTextarea() {
+
+  prompt.style.height = "auto";
+
+  const height =
+    Math.min(
+      prompt.scrollHeight,
+      160
+    );
+
+  prompt.style.height =
+    height + "px";
+}
+
+prompt.addEventListener(
+  "input",
+  resizeTextarea
+);
+
+
+/* =========================
+   SCROLL
+========================= */
+
+function scrollBottom() {
+
+  requestAnimationFrame(() => {
+    chat.scrollTop =
+      chat.scrollHeight;
+  });
+
+}
+
+
+/* =========================
+   ESCAPE
+========================= */
+
+function escapeHTML(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    text;
+
+  return div.innerHTML;
+}
+
+
+/* =========================
+   ADD MESSAGE
+========================= */
+
+function addMessage(
+  role,
+  content,
+  options = {}
+) {
+
+  const message =
+    document.createElement("div");
+
+  message.className =
+    "message " +
+    (
+      role === "user"
+        ? "user"
+        : "assistant"
+    ) +
+    (
+      options.error
+        ? " error"
+        : ""
+    );
+
+  const avatar =
+    role === "user"
+      ? "U"
+      : "R";
+
+  const name =
+    role === "user"
+      ? "Kamu"
+      : "Rojak AI";
+
+  message.innerHTML = `
+
+    <div class="avatar">
+      ${avatar}
+    </div>
+
+    <div class="message-content">
+
+      <div class="message-name">
+        ${name}
+      </div>
+
+      <div class="bubble">
+        ${escapeHTML(content)}
+      </div>
+
+    </div>
+
+  `;
+
+  chatInner.appendChild(
+    message
+  );
+
+  scrollBottom();
+
+  return message;
+}
+
+
+/* =========================
+   TYPING
+========================= */
+
+function addTyping() {
+
+  const message =
+    document.createElement("div");
+
+  message.className =
+    "message assistant";
+
+  message.innerHTML = `
+
+    <div class="avatar">
+      R
+    </div>
+
+    <div class="message-content">
+
+      <div class="message-name">
+        Rojak AI
+      </div>
+
+      <div class="bubble">
+
+        <div class="typing">
+
+          <span></span>
+          <span></span>
+          <span></span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+  chatInner.appendChild(
+    message
+  );
+
+  scrollBottom();
+
+  return message;
+}
+
+
+/* =========================
+   SEND
+========================= */
+
+async function sendMessage() {
+
+  if (isGenerating) {
+    return;
+  }
+
+  const text =
+    prompt.value.trim();
+
+  if (!text) {
+    return;
+  }
+
+  isGenerating = true;
+
+  sendButton.disabled = true;
+
+  const welcome =
+    document.getElementById(
+      "welcome"
+    );
+
+  if (welcome) {
+    welcome.remove();
+  }
+
+  addMessage(
+    "user",
+    text
+  );
+
+  messages.push({
+    role: "user",
+    content: text
+  });
+
+  prompt.value = "";
+
+  resizeTextarea();
+
+  const typing =
+    addTyping();
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/chat",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body: JSON.stringify({
+            messages
+          })
+        }
+      );
+
+    let data;
+
+    try {
+
+      data =
+        await response.json();
+
+    } catch {
+
+      throw new Error(
+        "Server mengirim respons tidak valid."
+      );
+
+    }
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        "Gagal menghubungi AI."
+      );
+
+    }
+
+    typing.remove();
+
+    const answer =
+      data.answer ||
+      "AI tidak memberikan jawaban.";
+
+    addMessage(
+      "assistant",
+      answer
+    );
+
+    messages.push({
+      role: "assistant",
+      content: answer
+    });
+
+    saveConversation();
+
+  } catch (error) {
+
+    typing.remove();
+
+    addMessage(
+      "assistant",
+      error.message ||
+      "Terjadi kesalahan.",
+      {
+        error: true
+      }
+    );
+
+  } finally {
+
+    isGenerating = false;
+
+    sendButton.disabled =
+      false;
+
+    prompt.focus();
+
+  }
+}
+
+
+/* =========================
+   ENTER
+========================= */
+
+prompt.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey
+    ) {
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  }
+);
+
+
+sendButton.addEventListener(
+  "click",
+  sendMessage
+);
+
+
+/* =========================
+   SUGGESTIONS
+========================= */
+
+function setupSuggestions() {
+
+  document
+    .querySelectorAll(".suggestion")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          prompt.value =
+            button.textContent.trim();
+
+          resizeTextarea();
+
+          prompt.focus();
+
+        }
+      );
+
+    });
+
+}
+
+setupSuggestions();
+
+
+/* =========================
+   NEW CHAT
+========================= */
+
+newChat.addEventListener(
+  "click",
+  () => {
+
+    messages = [];
+
+    currentConversationId =
+      null;
+
+    chatInner.innerHTML = "";
+
+    chatInner.appendChild(
+      createWelcome()
+    );
+
+    prompt.value = "";
+
+    resizeTextarea();
+
+    prompt.focus();
+
+  }
+);
+
+
+/* =========================
+   WELCOME
+========================= */
+
+function createWelcome() {
+
+  const element =
+    document.createElement("div");
+
+  element.className =
+    "welcome";
+
+  element.id =
+    "welcome";
+
+  element.innerHTML = `
+
+    <div class="welcome-logo">
+      R
+    </div>
+
+    <h1>
+      Ada yang bisa dibantu?
+    </h1>
+
+    <p>
+      Tanyakan sesuatu, minta bantuan coding,
+      belajar, menulis, atau sekadar berdiskusi.
+    </p>
+
+    <div class="suggestions">
+
+      <button class="suggestion">
+        Jelaskan HTML untuk pemula
+      </button>
+
+      <button class="suggestion">
+        Bantu saya membuat website
+      </button>
+
+      <button class="suggestion">
+        Buatkan contoh JavaScript
+      </button>
+
+      <button class="suggestion">
+        Jelaskan sesuatu dengan sederhana
+      </button>
+
+    </div>
+
+  `;
+
+  element
+    .querySelectorAll(".suggestion")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          prompt.value =
+            button.textContent.trim();
+
+          resizeTextarea();
+
+          prompt.focus();
+
+        }
+      );
+
+    });
+
+  return element;
+}
+
+
+/* =========================
+   SAVE
+========================= */
+
+function saveConversation() {
+
+  if (!messages.length) {
+    return;
+  }
+
+  const firstUser =
+    messages.find(
+      message =>
+        message.role === "user"
+    );
+
+  if (!firstUser) {
+    return;
+  }
+
+  const title =
+    firstUser.content
+      .replace(/\s+/g, " ")
+      .slice(0, 45);
+
+  const existing =
+    conversations.find(
+      item =>
+        item.id ===
+        currentConversationId
+    );
+
+  if (existing) {
+
+    existing.title =
+      title;
+
+    existing.messages =
+      messages;
+
+  } else {
+
+    currentConversationId =
+      Date.now();
+
+    conversations.unshift({
+
+      id:
+        currentConversationId,
+
+      title,
+
+      messages: [
+        ...messages
+      ]
+
+    });
+
+  }
+
+  conversations =
+    conversations.slice(0, 20);
+
+  localStorage.setItem(
+    "rojak_ai_conversations",
+    JSON.stringify(
+      conversations
+    )
+  );
+
+  renderHistory();
+}
+
+
+/* =========================
+   LOAD HISTORY
+========================= */
+
+function loadConversations() {
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        "rojak_ai_conversations"
+      );
+
+    conversations =
+      saved
+        ? JSON.parse(saved)
+        : [];
+
+  } catch {
+
+    conversations = [];
+
+  }
+
+  renderHistory();
+}
+
+
+/* =========================
+   RENDER HISTORY
+========================= */
+
+function renderHistory() {
+
+  historyElement.innerHTML = "";
+
+  if (!conversations.length) {
+
+    historyElement.innerHTML = `
+      <div class="history-empty">
+        Belum ada percakapan.
+      </div>
+    `;
+
+    return;
+  }
+
+  conversations.forEach(
+    conversation => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+      button.className =
+        "history-item";
+
+      button.textContent =
+        conversation.title;
+
+      button.addEventListener(
+        "click",
+        () =>
+          loadConversation(
+            conversation.id
+          )
+      );
+
+      historyElement.appendChild(
+        button
+      );
+
+    }
+  );
+}
+
+
+/* =========================
+   LOAD CONVERSATION
+========================= */
+
+function loadConversation(id) {
+
+  const conversation =
+    conversations.find(
+      item =>
+        item.id === id
+    );
+
+  if (!conversation) {
+    return;
+  }
+
+  currentConversationId =
+    conversation.id;
+
+  messages =
+    [...conversation.messages];
+
+  chatInner.innerHTML = "";
+
+  messages.forEach(
+    message => {
+
+      addMessage(
+        message.role,
+        message.content
+      );
+
+    }
+  );
+
+  scrollBottom();
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadConversations();
+resizeTextarea();
+</script>
+
+</body>
+</html>
