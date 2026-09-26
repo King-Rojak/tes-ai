@@ -1,608 +1,519 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Rojak AI</title>
-
-<meta
-  name="description"
-  content="Rojak AI - AI Assistant"
->
-
-<style>
-:root {
-  --bg: #0b0b0c;
-  --panel: #111113;
-  --panel2: #171719;
-  --border: #29292d;
-  --text: #f4f4f5;
-  --muted: #85858c;
-  --accent: #ff6a00;
-  --accent-hover: #ff7b1a;
-  --user: #252527;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 100%;
-  height: 100%;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family:
-    Inter,
-    Arial,
-    sans-serif;
-  overflow: hidden;
-}
-
-button,
-textarea {
-  font: inherit;
-}
-
-button {
-  border: 0;
-}
-
-/* =========================
-   APP
-========================= */
-
-.app {
-  display: flex;
-  width: 100%;
-  height: 100dvh;
-}
-
-/* =========================
-   SIDEBAR
-========================= */
-
-.sidebar {
-  width: 250px;
-  height: 100%;
-  background: #0f0f10;
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  flex-shrink: 0;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 5px 4px 22px;
-}
-
-.brand-logo {
-  width: 35px;
-  height: 35px;
-  border-radius: 10px;
-  background: var(--accent);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 14px;
-}
-
-.brand-info strong {
-  display: block;
-  font-size: 14px;
-}
-
-.brand-info span {
-  display: block;
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 2px;
-}
-
-.new-chat {
-  width: 100%;
-  height: 42px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--panel2);
-  color: var(--text);
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  font-size: 13px;
-  margin-bottom: 18px;
-}
-
-.new-chat:hover {
-  background: #1d1d20;
-}
-
-.side-label {
-  color: #66666d;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  padding: 0 5px 8px;
-}
-
-.history {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.history-empty {
-  color: #66666d;
-  font-size: 12px;
-  padding: 8px 5px;
-}
-
-.history-item {
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  color: #c8c8cc;
-  border-radius: 8px;
-  padding: 9px 10px;
-  margin-bottom: 3px;
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-}
-
-.history-item:hover {
-  background: #19191b;
-}
-
-.sidebar-bottom {
-  border-top: 1px solid var(--border);
-  padding-top: 13px;
-  color: #66666d;
-  font-size: 10px;
-  line-height: 1.5;
-}
-
-/* =========================
-   MAIN
-========================= */
-
-.main {
-  min-width: 0;
-  flex: 1;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.topbar {
-  height: 58px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  flex-shrink: 0;
-  background: #0b0b0c;
-}
-
-.mobile-brand {
-  display: none;
-  align-items: center;
-  gap: 9px;
-}
-
-.mobile-brand .brand-logo {
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  font-size: 12px;
-}
-
-.model-name {
-  color: #a5a5ab;
-  font-size: 11px;
-}
-
-.status {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #85858c;
-  font-size: 11px;
-}
-
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #44d483;
-}
-
-/* =========================
-   CHAT
-========================= */
-
-.chat {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.chat-inner {
-  width: min(820px, calc(100% - 32px));
-  margin: auto;
-  padding: 45px 0 150px;
-}
-
-/* =========================
-   WELCOME
-========================= */
-
-.welcome {
-  min-height: 50vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.welcome-logo {
-  width: 54px;
-  height: 54px;
-  border-radius: 15px;
-  background: var(--accent);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-weight: 900;
-  font-size: 19px;
-  margin-bottom: 18px;
-}
-
-.welcome h1 {
-  font-size: clamp(25px, 4vw, 38px);
-  letter-spacing: -1.5px;
-  margin-bottom: 10px;
-}
-
-.welcome p {
-  color: var(--muted);
-  font-size: 13px;
-  max-width: 450px;
-  line-height: 1.6;
-}
-
-.suggestions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  width: min(600px, 100%);
-  margin-top: 28px;
-}
-
-.suggestion {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 10px;
-  color: #c5c5ca;
-  padding: 12px;
-  text-align: left;
-  cursor: pointer;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.suggestion:hover {
-  background: #171719;
-  border-color: #3a3a3e;
-}
-
-/* =========================
-   MESSAGE
-========================= */
-
-.message {
-  display: flex;
-  margin-bottom: 25px;
-  gap: 12px;
-}
-
-.message.user {
-  justify-content: flex-end;
-}
-
-.avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  background: var(--accent);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 10px;
-  font-weight: 800;
-
-  flex-shrink: 0;
-}
-
-.message.user .avatar {
-  order: 2;
-  background: #29292c;
-  color: #ddd;
-}
-
-.message-content {
-  max-width: min(720px, 85%);
-  min-width: 0;
-}
-
-.message-name {
-  color: #77777f;
-  font-size: 10px;
-  margin-bottom: 5px;
-}
-
-.message.user .message-name {
-  text-align: right;
-}
-
-.bubble {
-  font-size: 14px;
-  line-height: 1.7;
-  color: #e5e5e8;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.message.user .bubble {
-  background: var(--user);
-  border: 1px solid #303034;
-  padding: 10px 13px;
-  border-radius: 13px;
-}
-
-.message.error .bubble {
-  color: #ff7777;
-}
-
-/* =========================
-   TYPING
-========================= */
-
-.typing {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  height: 22px;
-}
-
-.typing span {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #85858b;
-  animation: typing 1.2s infinite ease-in-out;
-}
-
-.typing span:nth-child(2) {
-  animation-delay: .15s;
-}
-
-.typing span:nth-child(3) {
-  animation-delay: .3s;
-}
-
-@keyframes typing {
-  0%,
-  60%,
-  100% {
-    transform: translateY(0);
-    opacity: .4;
-  }
-
-  30% {
-    transform: translateY(-4px);
-    opacity: 1;
-  }
-}
-
-/* =========================
-   COMPOSER
-========================= */
-
-.composer-area {
-  position: fixed;
-  bottom: 0;
-  left: 250px;
-  right: 0;
-
-  padding: 12px 20px 15px;
-
-  background:
-    linear-gradient(
-      to top,
-      var(--bg) 70%,
-      transparent
-    );
-
-  pointer-events: none;
-}
-
-.composer-wrap {
-  width: min(820px, 100%);
-  margin: auto;
-  pointer-events: auto;
-}
-
-.composer {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-
-  padding: 8px;
-
-  background: #141416;
-  border: 1px solid #303035;
-  border-radius: 15px;
-
-  box-shadow:
-    0 10px 35px rgba(0, 0, 0, .3);
-}
-
-#prompt {
-  flex: 1;
-
-  min-height: 40px;
-  max-height: 160px;
-
-  resize: none;
-
-  border: 0;
-  outline: 0;
-
-  background: transparent;
-  color: white;
-
-  padding: 10px 9px;
-
-  line-height: 1.4;
-  font-size: 13px;
-}
-
-#prompt::placeholder {
-  color: #68686e;
-}
-
-#send {
-  width: 40px;
-  height: 40px;
-
-  border-radius: 10px;
-
-  background: var(--accent);
-  color: white;
-
-  cursor: pointer;
-  font-size: 17px;
-
-  flex-shrink: 0;
-}
-
-#send:hover {
-  background: var(--accent-hover);
-}
-
-#send:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-}
-
-.composer-note {
-  text-align: center;
-  color: #5e5e64;
-  font-size: 9px;
-  margin-top: 7px;
-}
-
-/* =========================
-   SCROLLBAR
-========================= */
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #29292d;
-  border-radius: 10px;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 700px) {
-
-  .sidebar {
-    display: none;
-  }
-
-  .topbar {
-    height: 54px;
-    padding: 0 14px;
-  }
-
-  .mobile-brand {
-    display: flex;
-  }
-
-  .model-name {
-    display: none;
-  }
-
-  .chat-inner {
-    width: calc(100% - 24px);
-    padding-top: 25px;
-    padding-bottom: 145px;
-  }
-
-  .welcome {
-    min-height: 55vh;
-  }
-
-  .welcome h1 {
-    font-size: 27px;
-  }
-
-  .suggestions {
-    grid-template-columns: 1fr;
-    margin-top: 22px;
-  }
-
-  .message {
-    gap: 8px;
-  }
-
-  .message-content {
-    max-width: 88%;
-  }
-
-  .bubble {
-    font-size: 13px;
-  }
-
-  .composer-area {
-    left: 0;
-    padding: 8px 10px 10px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Rojak AI</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0d0d0d;
+      --panel: #151515;
+      --panel-2: #1b1b1b;
+      --border: #292929;
+      --text: #f5f5f5;
+      --muted: #929292;
+      --accent: #ff6a00;
+      --accent-hover: #ff7d24;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* =========================
+       APP
+    ========================= */
+
+    .app {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+      width: 250px;
+      height: 100%;
+      background: #111;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .brand-status {
+      font-size: 11px;
+      color: #777;
+      margin-top: 2px;
+    }
+
+    .new-chat {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--border);
+      background: #191919;
+      color: #fff;
+      border-radius: 9px;
+      text-align: left;
+      padding: 0 13px;
+      transition: .2s;
+    }
+
+    .new-chat:hover {
+      background: #222;
+      border-color: #3a3a3a;
+    }
+
+    .history-title {
+      margin-top: 25px;
+      margin-bottom: 9px;
+      color: #777;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+
+    .history {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      width: 100%;
+      padding: 10px;
+      border-radius: 7px;
+      border: 0;
+      background: transparent;
+      color: #cfcfcf;
+      text-align: left;
+      margin-bottom: 3px;
+      font-size: 13px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-item:hover {
+      background: #1c1c1c;
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 10px;
+      color: #666;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 60px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      flex-shrink: 0;
+    }
+
+    .mobile-menu {
+      display: none;
+      width: 35px;
+      height: 35px;
+      border: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 20px;
+    }
+
+    .model-name {
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .model-name strong {
+      color: #fff;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #888;
+      font-size: 12px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: #46c56f;
+      border-radius: 50%;
+    }
+
+    /* =========================
+       CHAT
+    ========================= */
+
+    .chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 35px 20px 160px;
+    }
+
+    .chat-inner {
+      width: min(850px, 100%);
+      margin: auto;
+    }
+
+    .welcome {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .welcome-logo {
+      width: 58px;
+      height: 58px;
+      background: var(--accent);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .welcome h1 {
+      font-size: 27px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 470px;
+      line-height: 1.6;
+    }
+
+    .suggestions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+      width: min(620px, 100%);
+      margin-top: 25px;
+    }
+
+    .suggestion {
+      background: #151515;
+      border: 1px solid var(--border);
+      color: #cfcfcf;
+      border-radius: 9px;
+      padding: 13px;
+      text-align: left;
+      font-size: 13px;
+      transition: .2s;
+    }
+
+    .suggestion:hover {
+      background: #1c1c1c;
+      border-color: #3a3a3a;
+    }
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    .message {
+      display: flex;
+      gap: 13px;
+      margin-bottom: 28px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .user-avatar {
+      background: #292929;
+      color: #ddd;
+    }
+
+    .ai-avatar {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .message-body {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .message-name {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 7px;
+      color: #ddd;
+    }
+
+    .message-content {
+      color: #ddd;
+      font-size: 14px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .message-content code {
+      background: #202020;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    /* =========================
+       INPUT
+    ========================= */
+
+    .input-area {
+      position: fixed;
+      bottom: 0;
+      left: 250px;
+      right: 0;
+      padding: 15px 20px 20px;
+      background: linear-gradient(
+        to top,
+        #0d0d0d 70%,
+        rgba(13,13,13,0)
+      );
+      z-index: 10;
+    }
+
+    .input-container {
+      width: min(850px, 100%);
+      margin: auto;
+      background: #151515;
+      border: 1px solid #303030;
+      border-radius: 13px;
+      display: flex;
+      align-items: flex-end;
+      padding: 8px;
+    }
+
+    #messageInput {
+      flex: 1;
+      resize: none;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff;
+      padding: 9px 10px;
+      min-height: 38px;
+      max-height: 150px;
+      line-height: 1.5;
+    }
+
+    #messageInput::placeholder {
+      color: #666;
+    }
+
+    .send-button {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 17px;
+      flex-shrink: 0;
+      transition: .2s;
+    }
+
+    .send-button:hover {
+      background: var(--accent-hover);
+    }
+
+    .send-button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .input-info {
+      width: min(850px, 100%);
+      margin: 7px auto 0;
+      text-align: center;
+      color: #555;
+      font-size: 10px;
+    }
+
+    /* =========================
+       TYPING
+    ========================= */
+
+    .typing {
+      display: flex;
+      gap: 4px;
+      padding: 5px 0;
+    }
+
+    .typing span {
+      width: 5px;
+      height: 5px;
+      background: #777;
+      border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) {
+      animation-delay: .15s;
+    }
+
+    .typing span:nth-child(3) {
+      animation-delay: .3s;
+    }
+
+    @keyframes blink {
+      0%, 60%, 100% {
+        opacity: .3;
+      }
+
+      30% {
+        opacity: 1;
+      }
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+
+      .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+        transition: left .2s ease;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .mobile-menu {
+        display: block;
+      }
+
+      .topbar {
+        padding: 0 12px;
+      }
+
+      .input-area {
+        left: 0;
+        padding: 10px 10px 13px;
+      }
+
+      .chat {
+        padding: 25px 13px 140px;
+      }
+
+      .welcome {
+        min-height: 65vh;
+      }
+
+      .welcome h1 {
+        font-size: 23px;
+      }
+
+      .suggestions {
+        grid-template-columns: 1fr;
+      }
+
+      .message {
+        gap: 9px;
+      }
+
+      .avatar {
+        width: 29px;
+        height: 29px;
+        flex-basis: 29px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -610,119 +521,75 @@ button {
 <div class="app">
 
   <!-- SIDEBAR -->
-
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
 
     <div class="brand">
+      <div class="brand-logo">R</div>
 
-      <div class="brand-logo">
-        R
+      <div>
+        <div class="brand-name">Rojak AI</div>
+        <div class="brand-status">AI Assistant</div>
       </div>
-
-      <div class="brand-info">
-
-        <strong>
-          Rojak AI
-        </strong>
-
-        <span>
-          AI Assistant
-        </span>
-
-      </div>
-
     </div>
 
-    <button
-      class="new-chat"
-      id="newChat"
-    >
-      <span>＋</span>
-      <span>New chat</span>
+    <button class="new-chat" id="newChat">
+      + &nbsp; Chat Baru
     </button>
 
-    <div class="side-label">
-      Percakapan
+    <div class="history-title">
+      Riwayat
     </div>
 
-    <div
-      class="history"
-      id="history"
-    >
-      <div class="history-empty">
-        Belum ada percakapan.
-      </div>
-    </div>
+    <div class="history" id="history"></div>
 
-    <div class="sidebar-bottom">
+    <div class="sidebar-footer">
       Rojak AI<br>
-      Powered by DeepSeek
+      Powered by OpenRouter
     </div>
 
   </aside>
 
-
   <!-- MAIN -->
-
   <main class="main">
 
     <header class="topbar">
 
-      <div class="mobile-brand">
-
-        <div class="brand-logo">
-          R
-        </div>
-
-        <strong>
-          Rojak AI
-        </strong>
-
-      </div>
+      <button
+        class="mobile-menu"
+        id="mobileMenu"
+        aria-label="Menu"
+      >
+        ☰
+      </button>
 
       <div class="model-name">
-        DeepSeek
+        <strong>Rojak AI</strong>
+        &nbsp;·&nbsp; OpenRouter
       </div>
 
       <div class="status">
-
         <span class="status-dot"></span>
-
         Online
-
       </div>
 
     </header>
 
-
     <!-- CHAT -->
+    <section class="chat" id="chat">
 
-    <section
-      class="chat"
-      id="chat"
-    >
+      <div class="chat-inner" id="chatInner">
 
-      <div
-        class="chat-inner"
-        id="chatInner"
-      >
-
-        <div
-          class="welcome"
-          id="welcome"
-        >
+        <div class="welcome" id="welcome">
 
           <div class="welcome-logo">
             R
           </div>
 
-          <h1>
-            Ada yang bisa dibantu?
-          </h1>
+          <h1>Halo, saya Rojak AI</h1>
 
           <p>
-            Tanyakan sesuatu, minta bantuan coding,
-            belajar, menulis, atau sekadar berdiskusi.
+            Asisten AI untuk membantu coding,
+            tugas sekolah, ide, dan berbagai kebutuhanmu.
           </p>
 
           <div class="suggestions">
@@ -732,15 +599,15 @@ button {
             </button>
 
             <button class="suggestion">
-              Bantu saya membuat website
+              Buatkan website sederhana
             </button>
 
             <button class="suggestion">
-              Buatkan contoh JavaScript
+              Bantu saya belajar matematika
             </button>
 
             <button class="suggestion">
-              Jelaskan sesuatu dengan sederhana
+              Berikan ide project coding
             </button>
 
           </div>
@@ -751,724 +618,414 @@ button {
 
     </section>
 
+    <!-- INPUT -->
+    <div class="input-area">
+
+      <div class="input-container">
+
+        <textarea
+          id="messageInput"
+          rows="1"
+          placeholder="Tulis pesan..."
+          autocomplete="off"
+        ></textarea>
+
+        <button
+          class="send-button"
+          id="sendButton"
+          aria-label="Kirim"
+        >
+          ↑
+        </button>
+
+      </div>
+
+      <div class="input-info">
+        Rojak AI dapat membuat kesalahan. Periksa informasi penting.
+      </div>
+
+    </div>
+
   </main>
 
 </div>
 
-
-<!-- COMPOSER -->
-
-<div class="composer-area">
-
-  <div class="composer-wrap">
-
-    <div class="composer">
-
-      <textarea
-        id="prompt"
-        rows="1"
-        placeholder="Tulis pesan..."
-        autocomplete="off"
-      ></textarea>
-
-      <button
-        id="send"
-        type="button"
-      >
-        ↑
-      </button>
-
-    </div>
-
-    <div class="composer-note">
-      AI dapat membuat kesalahan. Periksa informasi penting.
-    </div>
-
-  </div>
-
-</div>
-
-
 <script>
-const chat = document.getElementById("chat");
-const chatInner = document.getElementById("chatInner");
-const prompt = document.getElementById("prompt");
-const sendButton = document.getElementById("send");
-const newChat = document.getElementById("newChat");
-const historyElement = document.getElementById("history");
+  const chat = document.getElementById("chat");
+  const chatInner = document.getElementById("chatInner");
+  const welcome = document.getElementById("welcome");
+  const input = document.getElementById("messageInput");
+  const sendButton = document.getElementById("sendButton");
+  const newChat = document.getElementById("newChat");
+  const history = document.getElementById("history");
+  const sidebar = document.getElementById("sidebar");
+  const mobileMenu = document.getElementById("mobileMenu");
 
-let messages = [];
-let conversations = [];
-let currentConversationId = null;
-let isGenerating = false;
+  let messages = [];
+  let isLoading = false;
 
+  /* =========================
+     LOCAL STORAGE
+  ========================= */
 
-/* =========================
-   TEXTAREA
-========================= */
-
-function resizeTextarea() {
-
-  prompt.style.height = "auto";
-
-  const height =
-    Math.min(
-      prompt.scrollHeight,
-      160
+  function saveHistory() {
+    localStorage.setItem(
+      "rojak_ai_history",
+      JSON.stringify(messages)
     );
-
-  prompt.style.height =
-    height + "px";
-}
-
-prompt.addEventListener(
-  "input",
-  resizeTextarea
-);
-
-
-/* =========================
-   SCROLL
-========================= */
-
-function scrollBottom() {
-
-  requestAnimationFrame(() => {
-    chat.scrollTop =
-      chat.scrollHeight;
-  });
-
-}
-
-
-/* =========================
-   ESCAPE
-========================= */
-
-function escapeHTML(text) {
-
-  const div =
-    document.createElement("div");
-
-  div.textContent =
-    text;
-
-  return div.innerHTML;
-}
-
-
-/* =========================
-   ADD MESSAGE
-========================= */
-
-function addMessage(
-  role,
-  content,
-  options = {}
-) {
-
-  const message =
-    document.createElement("div");
-
-  message.className =
-    "message " +
-    (
-      role === "user"
-        ? "user"
-        : "assistant"
-    ) +
-    (
-      options.error
-        ? " error"
-        : ""
-    );
-
-  const avatar =
-    role === "user"
-      ? "U"
-      : "R";
-
-  const name =
-    role === "user"
-      ? "Kamu"
-      : "Rojak AI";
-
-  message.innerHTML = `
-
-    <div class="avatar">
-      ${avatar}
-    </div>
-
-    <div class="message-content">
-
-      <div class="message-name">
-        ${name}
-      </div>
-
-      <div class="bubble">
-        ${escapeHTML(content)}
-      </div>
-
-    </div>
-
-  `;
-
-  chatInner.appendChild(
-    message
-  );
-
-  scrollBottom();
-
-  return message;
-}
-
-
-/* =========================
-   TYPING
-========================= */
-
-function addTyping() {
-
-  const message =
-    document.createElement("div");
-
-  message.className =
-    "message assistant";
-
-  message.innerHTML = `
-
-    <div class="avatar">
-      R
-    </div>
-
-    <div class="message-content">
-
-      <div class="message-name">
-        Rojak AI
-      </div>
-
-      <div class="bubble">
-
-        <div class="typing">
-
-          <span></span>
-          <span></span>
-          <span></span>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-  chatInner.appendChild(
-    message
-  );
-
-  scrollBottom();
-
-  return message;
-}
-
-
-/* =========================
-   SEND
-========================= */
-
-async function sendMessage() {
-
-  if (isGenerating) {
-    return;
   }
 
-  const text =
-    prompt.value.trim();
-
-  if (!text) {
-    return;
-  }
-
-  isGenerating = true;
-
-  sendButton.disabled = true;
-
-  const welcome =
-    document.getElementById(
-      "welcome"
-    );
-
-  if (welcome) {
-    welcome.remove();
-  }
-
-  addMessage(
-    "user",
-    text
-  );
-
-  messages.push({
-    role: "user",
-    content: text
-  });
-
-  prompt.value = "";
-
-  resizeTextarea();
-
-  const typing =
-    addTyping();
-
-  try {
-
-    const response =
-      await fetch(
-        "/api/chat",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-
-          body: JSON.stringify({
-            messages
-          })
-        }
-      );
-
-    let data;
-
+  function loadHistory() {
     try {
+      const saved = localStorage.getItem("rojak_ai_history");
 
-      data =
-        await response.json();
+      if (!saved) return;
 
-    } catch {
+      const parsed = JSON.parse(saved);
 
-      throw new Error(
-        "Server mengirim respons tidak valid."
-      );
-
-    }
-
-    if (!response.ok) {
-
-      throw new Error(
-        data.error ||
-        "Gagal menghubungi AI."
-      );
-
-    }
-
-    typing.remove();
-
-    const answer =
-      data.answer ||
-      "AI tidak memberikan jawaban.";
-
-    addMessage(
-      "assistant",
-      answer
-    );
-
-    messages.push({
-      role: "assistant",
-      content: answer
-    });
-
-    saveConversation();
-
-  } catch (error) {
-
-    typing.remove();
-
-    addMessage(
-      "assistant",
-      error.message ||
-      "Terjadi kesalahan.",
-      {
-        error: true
+      if (Array.isArray(parsed)) {
+        messages = parsed;
+        renderMessages();
+        renderHistory();
       }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /* =========================
+     HISTORY
+  ========================= */
+
+  function renderHistory() {
+    history.innerHTML = "";
+
+    const userMessages = messages.filter(
+      message => message.role === "user"
     );
 
-  } finally {
+    userMessages.forEach((message) => {
 
-    isGenerating = false;
+      const button = document.createElement("button");
 
-    sendButton.disabled =
-      false;
+      button.className = "history-item";
 
-    prompt.focus();
+      button.textContent =
+        message.content.substring(0, 35);
 
-  }
-}
+      button.onclick = () => {
+        chat.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      };
 
-
-/* =========================
-   ENTER
-========================= */
-
-prompt.addEventListener(
-  "keydown",
-  event => {
-
-    if (
-      event.key === "Enter" &&
-      !event.shiftKey
-    ) {
-
-      event.preventDefault();
-
-      sendMessage();
-
-    }
-
-  }
-);
-
-
-sendButton.addEventListener(
-  "click",
-  sendMessage
-);
-
-
-/* =========================
-   SUGGESTIONS
-========================= */
-
-function setupSuggestions() {
-
-  document
-    .querySelectorAll(".suggestion")
-    .forEach(button => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          prompt.value =
-            button.textContent.trim();
-
-          resizeTextarea();
-
-          prompt.focus();
-
-        }
-      );
-
+      history.appendChild(button);
     });
+  }
 
-}
+  /* =========================
+     RENDER
+  ========================= */
 
-setupSuggestions();
-
-
-/* =========================
-   NEW CHAT
-========================= */
-
-newChat.addEventListener(
-  "click",
-  () => {
-
-    messages = [];
-
-    currentConversationId =
-      null;
+  function renderMessages() {
 
     chatInner.innerHTML = "";
 
-    chatInner.appendChild(
-      createWelcome()
-    );
+    if (messages.length === 0) {
+      chatInner.appendChild(welcome);
+      return;
+    }
 
-    prompt.value = "";
+    messages.forEach(message => {
+      addMessageToUI(
+        message.role,
+        message.content
+      );
+    });
 
-    resizeTextarea();
-
-    prompt.focus();
-
+    scrollBottom();
   }
-);
 
+  function addMessageToUI(role, content) {
 
-/* =========================
-   WELCOME
-========================= */
+    const message = document.createElement("div");
 
-function createWelcome() {
+    message.className = "message";
 
-  const element =
-    document.createElement("div");
+    const avatar = document.createElement("div");
 
-  element.className =
-    "welcome";
+    avatar.className =
+      "avatar " +
+      (role === "user"
+        ? "user-avatar"
+        : "ai-avatar");
 
-  element.id =
-    "welcome";
+    avatar.textContent =
+      role === "user" ? "K" : "R";
 
-  element.innerHTML = `
+    const body = document.createElement("div");
 
-    <div class="welcome-logo">
-      R
-    </div>
+    body.className = "message-body";
 
-    <h1>
-      Ada yang bisa dibantu?
-    </h1>
+    const name = document.createElement("div");
 
-    <p>
-      Tanyakan sesuatu, minta bantuan coding,
-      belajar, menulis, atau sekadar berdiskusi.
-    </p>
+    name.className = "message-name";
 
-    <div class="suggestions">
+    name.textContent =
+      role === "user"
+        ? "Kamu"
+        : "Rojak AI";
 
-      <button class="suggestion">
-        Jelaskan HTML untuk pemula
-      </button>
+    const contentElement = document.createElement("div");
 
-      <button class="suggestion">
-        Bantu saya membuat website
-      </button>
+    contentElement.className = "message-content";
 
-      <button class="suggestion">
-        Buatkan contoh JavaScript
-      </button>
+    contentElement.textContent = content;
 
-      <button class="suggestion">
-        Jelaskan sesuatu dengan sederhana
-      </button>
+    body.appendChild(name);
+    body.appendChild(contentElement);
 
-    </div>
+    message.appendChild(avatar);
+    message.appendChild(body);
 
-  `;
+    chatInner.appendChild(message);
+  }
 
-  element
-    .querySelectorAll(".suggestion")
+  /* =========================
+     SEND
+  ========================= */
+
+  async function sendMessage(text) {
+
+    if (isLoading) return;
+
+    text = text.trim();
+
+    if (!text) return;
+
+    if (messages.length === 0) {
+      chatInner.innerHTML = "";
+    }
+
+    messages.push({
+      role: "user",
+      content: text
+    });
+
+    addMessageToUI("user", text);
+
+    saveHistory();
+    renderHistory();
+
+    input.value = "";
+    autoResize();
+
+    isLoading = true;
+    sendButton.disabled = true;
+
+    const loadingMessage = document.createElement("div");
+
+    loadingMessage.className = "message";
+
+    loadingMessage.innerHTML = `
+      <div class="avatar ai-avatar">R</div>
+
+      <div class="message-body">
+        <div class="message-name">Rojak AI</div>
+
+        <div class="typing">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    `;
+
+    chatInner.appendChild(loadingMessage);
+
+    scrollBottom();
+
+    try {
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          messages: messages
+        })
+      });
+
+      const data = await response.json();
+
+      loadingMessage.remove();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error ||
+          "Terjadi kesalahan pada server."
+        );
+      }
+
+      const answer =
+        data.answer ||
+        "Maaf, AI tidak memberikan jawaban.";
+
+      messages.push({
+        role: "assistant",
+        content: answer
+      });
+
+      addMessageToUI(
+        "assistant",
+        answer
+      );
+
+      saveHistory();
+      renderHistory();
+
+    } catch (error) {
+
+      loadingMessage.remove();
+
+      const errorText =
+        "Maaf, terjadi kesalahan.\n\n" +
+        error.message;
+
+      addMessageToUI(
+        "assistant",
+        errorText
+      );
+
+    } finally {
+
+      isLoading = false;
+      sendButton.disabled = false;
+
+      input.focus();
+
+      scrollBottom();
+    }
+  }
+
+  /* =========================
+     SCROLL
+  ========================= */
+
+  function scrollBottom() {
+    setTimeout(() => {
+      chat.scrollTo({
+        top: chat.scrollHeight,
+        behavior: "smooth"
+      });
+    }, 50);
+  }
+
+  /* =========================
+     TEXTAREA
+  ========================= */
+
+  function autoResize() {
+
+    input.style.height = "auto";
+
+    input.style.height =
+      Math.min(input.scrollHeight, 150) + "px";
+  }
+
+  input.addEventListener(
+    "input",
+    autoResize
+  );
+
+  input.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Enter" &&
+        !event.shiftKey
+      ) {
+        event.preventDefault();
+        sendMessage(input.value);
+      }
+
+    }
+  );
+
+  sendButton.addEventListener(
+    "click",
+    () => sendMessage(input.value)
+  );
+
+  /* =========================
+     SUGGESTIONS
+  ========================= */
+
+  document.querySelectorAll(".suggestion")
     .forEach(button => {
 
       button.addEventListener(
         "click",
         () => {
 
-          prompt.value =
+          input.value =
             button.textContent.trim();
 
-          resizeTextarea();
-
-          prompt.focus();
+          autoResize();
+          input.focus();
 
         }
       );
 
     });
 
-  return element;
-}
+  /* =========================
+     NEW CHAT
+  ========================= */
 
+  newChat.addEventListener(
+    "click",
+    () => {
 
-/* =========================
-   SAVE
-========================= */
+      messages = [];
 
-function saveConversation() {
-
-  if (!messages.length) {
-    return;
-  }
-
-  const firstUser =
-    messages.find(
-      message =>
-        message.role === "user"
-    );
-
-  if (!firstUser) {
-    return;
-  }
-
-  const title =
-    firstUser.content
-      .replace(/\s+/g, " ")
-      .slice(0, 45);
-
-  const existing =
-    conversations.find(
-      item =>
-        item.id ===
-        currentConversationId
-    );
-
-  if (existing) {
-
-    existing.title =
-      title;
-
-    existing.messages =
-      messages;
-
-  } else {
-
-    currentConversationId =
-      Date.now();
-
-    conversations.unshift({
-
-      id:
-        currentConversationId,
-
-      title,
-
-      messages: [
-        ...messages
-      ]
-
-    });
-
-  }
-
-  conversations =
-    conversations.slice(0, 20);
-
-  localStorage.setItem(
-    "rojak_ai_conversations",
-    JSON.stringify(
-      conversations
-    )
-  );
-
-  renderHistory();
-}
-
-
-/* =========================
-   LOAD HISTORY
-========================= */
-
-function loadConversations() {
-
-  try {
-
-    const saved =
-      localStorage.getItem(
-        "rojak_ai_conversations"
+      localStorage.removeItem(
+        "rojak_ai_history"
       );
 
-    conversations =
-      saved
-        ? JSON.parse(saved)
-        : [];
+      renderMessages();
+      renderHistory();
 
-  } catch {
+      input.value = "";
+      autoResize();
+      input.focus();
 
-    conversations = [];
-
-  }
-
-  renderHistory();
-}
-
-
-/* =========================
-   RENDER HISTORY
-========================= */
-
-function renderHistory() {
-
-  historyElement.innerHTML = "";
-
-  if (!conversations.length) {
-
-    historyElement.innerHTML = `
-      <div class="history-empty">
-        Belum ada percakapan.
-      </div>
-    `;
-
-    return;
-  }
-
-  conversations.forEach(
-    conversation => {
-
-      const button =
-        document.createElement(
-          "button"
-        );
-
-      button.className =
-        "history-item";
-
-      button.textContent =
-        conversation.title;
-
-      button.addEventListener(
-        "click",
-        () =>
-          loadConversation(
-            conversation.id
-          )
-      );
-
-      historyElement.appendChild(
-        button
-      );
-
-    }
-  );
-}
-
-
-/* =========================
-   LOAD CONVERSATION
-========================= */
-
-function loadConversation(id) {
-
-  const conversation =
-    conversations.find(
-      item =>
-        item.id === id
-    );
-
-  if (!conversation) {
-    return;
-  }
-
-  currentConversationId =
-    conversation.id;
-
-  messages =
-    [...conversation.messages];
-
-  chatInner.innerHTML = "";
-
-  messages.forEach(
-    message => {
-
-      addMessage(
-        message.role,
-        message.content
-      );
+      sidebar.classList.remove("open");
 
     }
   );
 
-  scrollBottom();
-}
+  /* =========================
+     MOBILE MENU
+  ========================= */
 
+  mobileMenu.addEventListener(
+    "click",
+    () => {
+      sidebar.classList.toggle("open");
+    }
+  );
 
-/* =========================
-   START
-========================= */
+  /* =========================
+     START
+  ========================= */
 
-loadConversations();
-resizeTextarea();
+  loadHistory();
 </script>
 
 </body>
