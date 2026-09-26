@@ -70,20 +70,20 @@ let messages=[];
 
 function escapeHTML(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 function cleanAIText(text){
- return String(text||"").replace(/[\\u200B-\\u200D\\uFEFF]/g,"").replace(/[\\u{1F300}-\\u{1FAFF}\\u{2600}-\\u{27BF}]/gu,"").replace(/\\r/g,"").trim();
+ return String(text||"").replace(/[\u200B-\u200D\uFEFF]/g,"").replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,"").replace(/\r/g,"").trim();
 }
 function inline(s){
  s=escapeHTML(s);
- s=s.replace(/`([^`\\n]+)`/g,'<code class="inline-code">$1</code>');
- s=s.replace(/\\*\\*([^*\\n]+)\\*\\*/g,"<strong>$1</strong>");
- s=s.replace(/__([^_\\n]+)__/g,"<strong>$1</strong>");
- s=s.replace(/\\*([^*\\n]+)\\*/g,"<em>$1</em>");
- s=s.replace(/_([^_\\n]+)_/g,"<em>$1</em>");
+ s=s.replace(/`([^`\n]+)`/g,'<code class="inline-code">$1</code>');
+ s=s.replace(/\*\*([^*\n]+)\*\*/g,"<strong>$1</strong>");
+ s=s.replace(/__([^_\n]+)__/g,"<strong>$1</strong>");
+ s=s.replace(/\*([^*\n]+)\*/g,"<em>$1</em>");
+ s=s.replace(/_([^_\n]+)_/g,"<em>$1</em>");
  return s;
 }
 function renderMarkdown(raw){
  const text=cleanAIText(raw);
- const lines=text.split("\\n"), out=[];
+ const lines=text.split("\n"), out=[];
  let i=0, orderedOpen=false, unorderedOpen=false, orderedCount=0;
  const closeLists=()=>{if(orderedOpen){out.push("</ol>");orderedOpen=false}if(unorderedOpen){out.push("</ul>");unorderedOpen=false}};
  while(i<lines.length){
@@ -94,16 +94,16 @@ function renderMarkdown(raw){
      i++;
      while(i<lines.length&&!/^```/.test(lines[i].trim())){code.push(lines[i]);i++}
      if(i<lines.length)i++;
-     const safe=escapeHTML(code.join("\\n"));
+     const safe=escapeHTML(code.join("\n"));
      const id="code_"+Math.random().toString(36).slice(2);
-     out.push(`<div class="code-wrap"><div class="code-head"><span>${escapeHTML(lang)}</span><button class="copy-code" data-code="${encodeURIComponent(code.join("\\n"))}">Copy</button></div><pre><code id="${id}">${safe}</code></pre></div>`);
+     out.push(`<div class="code-wrap"><div class="code-head"><span>${escapeHTML(lang)}</span><button class="copy-code" data-code="${encodeURIComponent(code.join("\n"))}">Copy</button></div><pre><code id="${id}">${safe}</code></pre></div>`);
      continue;
    }
-   if(/^#{1,3}\\s+/.test(line)){closeLists();const m=line.match(/^(#{1,3})\\s+(.*)$/);out.push(`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`);i++;continue}
-   if(/^\\s*(---+|___+|\\*\\*\\*+)\\s*$/.test(line)){closeLists();out.push("<hr>");i++;continue}
-   if(/^\\s*>/.test(line)){closeLists();out.push(`<blockquote>${inline(line.replace(/^\\s*>\\s?/,""))}</blockquote>`);i++;continue}
+   if(/^#{1,3}\s+/.test(line)){closeLists();const m=line.match(/^(#{1,3})\s+(.*)$/);out.push(`<h${m[1].length}>${inline(m[2])}</h${m[1].length}>`);i++;continue}
+   if(/^\s*(---+|___+|\*\*\*+)\s*$/.test(line)){closeLists();out.push("<hr>");i++;continue}
+   if(/^\s*>/.test(line)){closeLists();out.push(`<blockquote>${inline(line.replace(/^\s*>\s?/,""))}</blockquote>`);i++;continue}
 
-   const num=line.match(/^\\s*(\\d+)[.)]\\s+(.*)$/);
+   const num=line.match(/^\s*(\d+)[.)]\s+(.*)$/);
    if(num){
      if(unorderedOpen){out.push("</ul>");unorderedOpen=false}
      if(!orderedOpen){orderedOpen=true;out.push(`<ol start="${Math.max(1,parseInt(num[1],10))}">`);orderedCount=parseInt(num[1],10)-1}
@@ -112,7 +112,7 @@ function renderMarkdown(raw){
      out.push(`<li>${inline(num[2])}</li>`);
      i++; continue;
    }
-   const bullet=line.match(/^\\s*[-*+]\\s+(.*)$/);
+   const bullet=line.match(/^\s*[-*+]\s+(.*)$/);
    if(bullet){
      if(orderedOpen){out.push("</ol>");orderedOpen=false}
      if(!unorderedOpen){unorderedOpen=true;out.push("<ul>")}
@@ -122,7 +122,7 @@ function renderMarkdown(raw){
    if(!line.trim()){i++;continue}
    closeLists();
    let para=[line.trim()]; i++;
-   while(i<lines.length && lines[i].trim() && !/^(#{1,3})\\s+/.test(lines[i]) && !/^\\s*[-*+]\\s+/.test(lines[i]) && !/^\\s*\\d+[.)]\\s+/.test(lines[i]) && !/^\\s*>/.test(lines[i]) && !/^```/.test(lines[i].trim())){para.push(lines[i].trim());i++}
+   while(i<lines.length && lines[i].trim() && !/^(#{1,3})\s+/.test(lines[i]) && !/^\s*[-*+]\s+/.test(lines[i]) && !/^\s*\d+[.)]\s+/.test(lines[i]) && !/^\s*>/.test(lines[i]) && !/^```/.test(lines[i].trim())){para.push(lines[i].trim());i++}
    out.push(`<p>${inline(para.join(" "))}</p>`);
  }
  closeLists();
@@ -131,7 +131,7 @@ function renderMarkdown(raw){
 function addMessage(role,content){
  const wrap=document.createElement("div");wrap.className="message "+role;
  const bubble=document.createElement("div");bubble.className="bubble";
- bubble.innerHTML=role==="assistant"?renderMarkdown(content):inline(content).replace(/\\n/g,"<br>");
+ bubble.innerHTML=role==="assistant"?renderMarkdown(content):inline(content).replace(/\n/g,"<br>");
  wrap.appendChild(bubble);chatInner.appendChild(wrap);
  chat.scrollTop=chat.scrollHeight;
  return bubble;
