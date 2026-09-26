@@ -240,7 +240,7 @@ document.getElementById("loading")?.remove();addMessage("assistant",answer);
 if(messages.length===2){chatHistory.push({title:text.slice(0,60),messages:[...messages]});saveHistory();renderHistory()}
 }catch(err){
 document.getElementById("loading")?.remove();
-addMessage("assistant","Terjadi masalah saat menghubungi Rojak AI.\n\n"+err.message);
+addMessage("assistant","Rojak AI gagal memproses pesan.\n\n**Detail:**\n\n`"+err.message.replace(/`/g,"") +"`\n\nJika pesan menyebut Environment Variable, lakukan **Redeploy** di Vercel setelah mengubah variable.");
 }finally{send.disabled=false;input.focus()}
 }
 form.addEventListener("submit",e=>{e.preventDefault();sendMessage()});
