@@ -2,7 +2,7 @@
   "name": "rojak-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "Rojak AI - OpenRouter AI Assistant",
+  "description": "Rojak AI - Rojak DriveK1t Assistant",
   "scripts": {
     "dev": "vercel dev"
   }
