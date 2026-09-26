@@ -86,7 +86,7 @@ const closeCode=()=>{if(!code)return;html+=`<div class="code-wrapper"><div class
 for(const line of lines){
 if(line.trim().startsWith("```")){if(!code){closeP();closeLists();code=true;lang=line.trim().substring(3).trim()}else closeCode();continue}
 if(code){codeLines.push(line);continue}
-if(!line.trim()){closeP();closeLists();continue}
+if(!line.trim()){closeP();continue}
 if(line.trim()==="---"||line.trim()==="***"){closeP();closeLists();html+="<hr>";continue}
 if(/^# /.test(line)){closeP();closeLists();html+=`<h1>${parseInline(line.substring(2))}</h1>`;continue}
 if(/^## /.test(line)){closeP();closeLists();html+=`<h2>${parseInline(line.substring(3))}</h2>`;continue}
